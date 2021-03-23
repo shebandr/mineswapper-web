@@ -1,2 +1,2 @@
-# mineswapper-web
+# minesweeper-web
 веб версия сапера
