@@ -5,4 +5,11 @@ td {
 	background: pink;
 	height: 30px;
 	width: 30px;
+	text-align: center;
+}
+#numbers {
+	background-color: lightgray;
+	width: 100px;
+	height: 40px;
+	text-align: center;
 }
