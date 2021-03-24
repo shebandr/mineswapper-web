@@ -8,6 +8,7 @@ var table_flag = []
 var table_html 
 var elem
 var flags = 0
+var opened = 0
 var getRandomInt = function(max) {
   return Math.floor(Math.random() * Math.floor(max))}
 var table_generator = function(x, y){
@@ -34,20 +35,20 @@ var table_generator = function(x, y){
 	document.body.innerHTML = table_html
 	var element = document.getElementById("table")
 	element.addEventListener("contextmenu", function(event) {
-  console.log("Мы отменили стандартное действие браузера");
-  event.preventDefault();
-}, false);
+  	event.preventDefault();
+	}, false);}
 
-
-
-}
 var vskritie = function(x, y){
 	var check = 0
-	elem = document.getElementById("t"+(y*10+x))
+	if ((opened == 0) && (table[y][x] == 1)) {
+		bombs = 0
+		table_generator(table[0].length-1, table.length)
+		vskritie(x, y)
+	}
+	elem = elem_cell(x, y)
 	if ((table[y][x] == 1) && (loose == 0)){
-		loose_game()}
+		loose_game(x, y)}
 	if ((table[y][x] == 0) && (loose == 0) && (table_flag[y][x] == 0)){
-		
 		if ((y < table.length-1) && (y != 0) && (x>0)){ 
 			check = Number(table[y][x+1]) + Number(table[y][x-1]) + Number(table[y+1][x+1]) + Number(table[y+1][x-1]) + Number(table[y+1][x]) + Number(table[y-1][x]) + Number(table[y-1][x+1]) + Number(table[y-1][x-1])}
 		if(check == 0){
@@ -91,26 +92,12 @@ var vskritie = function(x, y){
 
 		table_flag[y] = replace(x, 2, y)
 		elem.style.backgroundColor = "lightgray"}
-		if (loose==1){
-			console.log("ты уже проиграл")
-		}
-		if ((elem.innerText == "") && (loose == 0)){
-			console.log('ы')
-			}}
+		opened = opened + 1
+		win()}
 
-// var if_zero = function(x, y){
-// 	if ((y>0) && (y<table.length-1) && (x>0) && (x<table[y].length-1)){
-// 		vskritie(y, x-1)
-// 		vskritie(y, x+1)
-// 		vskritie(y+1, x)
-// 		vskritie(y+1, x+1)
-// 		vskritie(y+1, x-1)
-// 		vskritie(y-1, x)
-// 		vskritie(y-1, x+1)
-// 		vskritie(y-1, x-1)}}
 
 var flag = function(x, y){
-	elem = document.getElementById("t"+(y*10+x))
+	elem = elem_cell(x, y)
 	elem_bombs = document.getElementById("bombss")
 	if ((table_flag[y][x] == 0) && (loose == 0) && (flags < bombs)){
 		table_flag[y] = replace(x, 1, y)
@@ -136,10 +123,31 @@ var replace = function(i, p, y){
 			stroka = stroka + table_flag[y][n]}}
 	return(stroka)}
 
-var loose_game = function() {
+var loose_game = function(x, y) {
 	console.log("проигрыш")
 	loose = 1
 	elem.style.backgroundColor = "red"
+	pometka_bomb("red")
 	}
 	
+var pometka_bomb = function(color){
+	for (var yy = 0; yy <= table.length-1; yy++) {
+		for (var xx = 0; xx <= table[yy].length-2; xx++) {
+			elem = elem_cell(xx, yy)
+			if (table[yy][xx] == 1) {
+				elem.style.backgroundColor = color
+			}
+		}
+	}
+}
 
+var elem_cell = function(x, y){
+	return(document.getElementById("t"+(y*10+x)))
+}
+
+var win = function(){
+	if (((table.length)*(table[0].length-1))==opened + bombs){
+		pometka_bomb("blue")
+		loose = 1
+	}
+}
